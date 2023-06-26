@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GPT Voice Bot</title>
+  <script>
+    // Create WebSocket connection
+    const socket = new WebSocket('ws://localhost:3000');
+
+    // Handle socket open event
+    socket.addEventListener('open', (event) => {
+      console.log('WebSocket connection established');
+    });
+
+    // Handle socket message event
+    socket.addEventListener('message', (event) => {
+      // Create an audio element to play the received audio response
+      const audioElement = document.createElement('audio');
+      audioElement.src = URL.createObjectURL(event.data);
+      audioElement.controls = true;
+      audioElement.autoplay = true;
+
+      // Append the audio element to the response container
+      const responseContainer = document.getElementById('response-container');
+      responseContainer.appendChild(audioElement);
+    });
+
+    // Start recording voice when the button is clicked
+    function startRecording() {
+      socket.send('start');
+    }
+
+    // Stop recording voice when the button is released
+    function stopRecording() {
+      socket.send('stop');
+    }
+  </script>
+</head>
+<body>
+  <h1>GPT Voice Bot</h1>
+  
+  <div>
+    <button onmousedown="startRecording()" onmouseup="stopRecording()">Speak</button>
+  </div>
+
+  <div id="response-container"></div>
+</body>
+</html>
